@@ -10,6 +10,8 @@ import { GridMaterial } from '@babylonjs/materials/grid/gridMaterial';
 import {VolumetricLightScatteringPostProcess} from '@babylonjs/core/PostProcesses/volumetricLightScatteringPostProcess';
 import { Texture } from '@babylonjs/core';
 import { Material } from '@babylonjs/core';
+import { SceneLoader } from '@babylonjs/core';
+import "@babylonjs/loaders"
 
 let canvas:HTMLCanvasElement;
 let engine:Engine;
@@ -32,7 +34,7 @@ class Game {
   renderLoop(){
     scene.render();
   }
-
+ 
   makeCube(x:number,y:number,z:number,size:number){
     let mesh = MeshBuilder.CreateBox("box",{size},scene);
     mesh.position = new Vector3(x,y,z);
@@ -44,22 +46,29 @@ class Game {
     let mesh = MeshBuilder.CreateBox("sc1",{height:height,size},scene);
     mesh.position = new Vector3(x,y,z);
     mesh.material = new GridMaterial("grid", scene);
+    
     return mesh;
   }
 
+  async makeSkyCrapper2(x:number,y:number,z:number){
+    const result = await SceneLoader.ImportMeshAsync("","./objs/", "test1.gltf", scene);
+    let env = result.meshes[0];
+    env.position = new Vector3(x,y,z);
+    let allMeshes = env.getChildMeshes();
+  }
 
   createLightSimple(){
     let light = new HemisphericLight("light1", new Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
   }
 
-  createsuperLight(){
+  createSun(){
     let godrays = new VolumetricLightScatteringPostProcess('godrays', 1.0, camera, null, 100, Texture.BILINEAR_SAMPLINGMODE, engine, false);
-   // godrays.mesh.material.diffuseTexture = new Texture('textures/sun.png', scene, true, false, Texture.BILINEAR_SAMPLINGMODE);
+    //godrays.mesh.material.diffuseTexture = new Texture('textures/sun.png', scene, true, false, Texture.BILINEAR_SAMPLINGMODE);
 	 // godrays.mesh.material.diffuseTexture.hasAlpha = true;
 	  godrays.mesh.position = new Vector3(-150, 150, 0);
     
-	  godrays.mesh.scaling = new Vector3(350, 350, 350);
+	  godrays.mesh.scaling = new Vector3(50, 50, 50);
 
 //	light.position = godrays.mesh.position;
 
@@ -67,11 +76,14 @@ class Game {
 }
 
 let PGame = new Game();
-for (let i=0; i<20; i++)
-  for (let j=0; j<20; j++)
-    PGame.makeSkyCrapper(i*15-50,0,j*15-50,10,30);
+for (let i=0; i<8; i++)
+  for (let j=0; j<8; j++){
+    //PGame.makeSkyCrapper(i*15-50,0,j*15-50,10,30);
+    PGame.makeSkyCrapper2(i*25-50,0,j*35-50);
+  }
+
 PGame.createLightSimple();
-PGame.createsuperLight();
+PGame.createSun();
 
 
 
