@@ -51,7 +51,7 @@ class Game {
   }
 
   async makeSkyCrapper2(x:number,y:number,z:number){
-    const result = await SceneLoader.ImportMeshAsync("","./objs/", "test1.gltf", scene);
+    const result = await SceneLoader.ImportMeshAsync("","./objs/", "zone2.gltf", scene);
     let env = result.meshes[0];
     env.position = new Vector3(x,y,z);
     let allMeshes = env.getChildMeshes();
@@ -76,12 +76,14 @@ class Game {
 }
 
 let PGame = new Game();
-for (let i=0; i<8; i++)
+/*for (let i=0; i<8; i++)
   for (let j=0; j<8; j++){
     //PGame.makeSkyCrapper(i*15-50,0,j*15-50,10,30);
-    PGame.makeSkyCrapper2(i*25-50,0,j*35-50);
+    PGame.makeSkyCrapper2(i*400-50,0,j*400-50);
   }
-
+*/
+PGame.makeSkyCrapper2(50,0,50);
+  
 PGame.createLightSimple();
 PGame.createSun();
 
